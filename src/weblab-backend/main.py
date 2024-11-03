@@ -3,7 +3,7 @@ from typing import Union
 import time
 
 from fastapi import FastAPI, Request
-from .routers import dummy
+from .routers import dummy,ollama
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -21,7 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(dummy.router)
-
+app.include_router(ollama.router)
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     start_time = time.perf_counter()

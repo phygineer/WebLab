@@ -1,10 +1,14 @@
 volumes:
   database_volume:
     driver: local   
+  llm_volume:
+    driver: local
 services:
   frontend:
     build: ./src/weblab-ui
     container_name: frontend
+    profiles:
+      - frontend
     ports:
       - "4200:4200"
     depends_on:
@@ -15,8 +19,25 @@ services:
   backend:
     build: ./src/weblab-backend
     container_name: backend
+    profiles:
+      - backend
     ports:
       - "8000:8000"
+
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - llm_volume:/root/.ollama
+    ports:
+      - "11434:11434"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: "8G"
+        reservations:
+          cpus: "4"
+          memory: "8G"
 
   database:
     image: mongo:latest
